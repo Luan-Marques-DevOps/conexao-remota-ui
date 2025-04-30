@@ -6,7 +6,23 @@ import { useRouter } from "next/navigation";
 
 export default function Home() {
   const [showPassword, setShowPassword] = useState(false);
+  const [ip, setIp] = useState("");
   const router = useRouter();
+
+  const handleConnect = async () => {
+    try {
+      const response = await fetch("http://localhost:8000/conectar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ip }),
+      });
+
+      const data = await response.json();
+      console.log("Conectando:", data);
+    } catch (error) {
+      console.error("Erro ao conectar:", error);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center p-4">
@@ -18,8 +34,7 @@ export default function Home() {
             <h2 className="text-lg font-bold">SEU COMPUTADOR</h2>
             <p className="text-sm text-gray-300 mt-1">
               <strong className="text-red-400">CUIDADO!</strong> Qualquer pessoa
-              pode conectar no seu computador
-              e ter acesso se souber o seu ID e
+              pode conectar no seu computador e ter acesso se souber o seu ID e
               Senha.
             </p>
           </div>
@@ -72,9 +87,14 @@ export default function Home() {
           <input
             type="text"
             placeholder="192.168.7.111"
+            value={ip}
+            onChange={(e) => setIp(e.target.value)}
             className="w-full px-4 py-2 rounded bg-gray-700 border border-gray-600 text-white"
           />
-          <button className="px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg shadow text-white self-start">
+          <button
+            className="px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg shadow text-white self-start"
+            onClick={handleConnect}
+          >
             CONECTAR
           </button>
         </div>
